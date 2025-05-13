@@ -1,0 +1,60 @@
+import React, { useState } from "react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import axios from "axios";
+
+function BookingWidget() {
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+
+  const handleBooking = async () => {
+    try {
+      const res = await axios.post("http://localhost:3001/book", {
+        name,
+        email,
+        startDate,
+        endDate,
+      });
+      alert(res.data.message);
+    } catch (err) {
+      alert(err.response.data.message);
+    }
+  };
+
+  return (
+    <div className="booking-widget">
+      <input
+        placeholder="Your Name"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+      /><br/>
+      <input
+        placeholder="Your Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      /><br/>
+      <DatePicker
+        selected={startDate}
+        onChange={(date) => setStartDate(date)}
+        selectsStart
+        startDate={startDate}
+        endDate={endDate}
+        placeholderText="Check-in"
+      /><br/>
+      <DatePicker
+        selected={endDate}
+        onChange={(date) => setEndDate(date)}
+        selectsEnd
+        startDate={startDate}
+        endDate={endDate}
+        minDate={startDate}
+        placeholderText="Check-out"
+      /><br/>
+      <button onClick={handleBooking}>Book Now</button>
+    </div>
+  );
+}
+
+export default BookingWidget;
